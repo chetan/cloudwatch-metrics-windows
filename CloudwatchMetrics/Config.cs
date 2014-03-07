@@ -13,12 +13,23 @@ namespace CloudwatchMetrics {
     public string SecretKey { get; set; }
     public string AccessKey { get; set; }
 
-    private string _hostname;
+    private IList<string> ignoreUsers;
+    public IList<string> IgnoreUsers {
+      get { return ignoreUsers; }
+      set {
+        ignoreUsers = new List<string>();
+        foreach (string s in value) {
+          ignoreUsers.Add(s.ToLower());
+        }
+      }
+    }
+
+    private string hostname;
     public string Hostname {
       get {
-        return String.IsNullOrEmpty(_hostname) ? System.Net.Dns.GetHostName() : _hostname;
+        return String.IsNullOrEmpty(hostname) ? System.Net.Dns.GetHostName() : hostname;
       }
-      set { _hostname = value;  }
+      set { hostname = value;  }
     }
 
     public RegionEndpoint RegionEndpoint {

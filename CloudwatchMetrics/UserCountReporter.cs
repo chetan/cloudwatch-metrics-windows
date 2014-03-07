@@ -1,5 +1,7 @@
-﻿using Amazon.CloudWatch;
+﻿using System.Linq;
+using Amazon.CloudWatch;
 using Amazon.CloudWatch.Model;
+using Amazon.IdentityManagement.Model;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -30,9 +32,16 @@ namespace CloudwatchMetrics {
       
       List<String> users = new UserListFetcher().Fetch("localhost");
 
+      // Optionally filter out ignored users
+      int count = users.Count;
+      if (config.IgnoreUsers != null && config.IgnoreUsers.Count > 0) {
+        count = users.FindAll(s => !config.IgnoreUsers.Contains(s.ToLower())).Count;
+      }
+      logger.Info("Reporting user count of " + count + " (of " + users.Count + " total users)");
+
       MetricDatum md = new MetricDatum();
       md.MetricName = "user.count";
-      md.Value = users.Count;
+      md.Value = count;
       md.Unit = StandardUnit.Count;
 
       PutMetricDataRequest req = new PutMetricDataRequest();
