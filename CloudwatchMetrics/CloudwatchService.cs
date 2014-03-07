@@ -52,8 +52,24 @@ namespace CloudwatchMetrics {
     }
 
     public static void Main() {
-      System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
-      System.ServiceProcess.ServiceBase.Run(new CloudwatchService());
+      if (Environment.UserInteractive) {
+        CloudwatchService service = new CloudwatchService();
+        service.OnStart(null);
+        new CountdownEvent(1).Wait();
+
+      } else {
+        // running as service
+        System.IO.Directory.SetCurrentDirectory(System.AppDomain.CurrentDomain.BaseDirectory);
+        System.ServiceProcess.ServiceBase.Run(new CloudwatchService());
+      }
+    }
+
+    private void InitializeComponent() {
+      //
+      // CloudwatchService
+      //
+      this.ServiceName = "CloudWatch Metrics";
+
     }
 
   }
