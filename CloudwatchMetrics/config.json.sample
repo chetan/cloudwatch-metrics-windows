@@ -1,5 +1,7 @@
 ﻿{
-  "AccessKey" : "",
-  "SecretKey" : "",
-  "Hostname" : "localhost"
+  "AccessKey"   : "",
+  "SecretKey"   : "",
+  "IgnoreUsers" : [],
+  "ProcessName" : "explorer.exe",
+  "Hostname"    : "localhost"
 }

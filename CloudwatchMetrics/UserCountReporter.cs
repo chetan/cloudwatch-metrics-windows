@@ -30,7 +30,7 @@ namespace CloudwatchMetrics {
     public void Report() {
       logger.Info("Reporting metrics");
       
-      List<String> users = new UserListFetcher().Fetch("localhost");
+      List<String> users = new UserListFetcher().Fetch(config.ProcessName, "localhost");
 
       // Optionally filter out ignored users
       int count = users.Count;

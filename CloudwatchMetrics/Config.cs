@@ -1,4 +1,5 @@
-﻿using Amazon;
+﻿using System.Diagnostics;
+using Amazon;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ namespace CloudwatchMetrics {
 
     private static readonly ILog logger = LogManager.GetLogger(typeof(Config).FullName);
 
-    public string Region { get; set; }
     public string SecretKey { get; set; }
     public string AccessKey { get; set; }
 
@@ -18,10 +18,18 @@ namespace CloudwatchMetrics {
       get { return ignoreUsers; }
       set {
         ignoreUsers = new List<string>();
-        foreach (string s in value) {
+        foreach (var s in value) {
           ignoreUsers.Add(s.ToLower());
         }
       }
+    }
+
+    private string processName;
+    public string ProcessName {
+      get {
+        return String.IsNullOrEmpty(processName) ? "explorer.exe" : processName;
+      }
+      set { processName = value; }
     }
 
     private string hostname;
@@ -29,9 +37,10 @@ namespace CloudwatchMetrics {
       get {
         return String.IsNullOrEmpty(hostname) ? System.Net.Dns.GetHostName() : hostname;
       }
-      set { hostname = value;  }
+      set { hostname = value; }
     }
 
+    public string Region { get; set; }
     public RegionEndpoint RegionEndpoint {
       get {
         if (!String.IsNullOrEmpty(Region)) {

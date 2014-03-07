@@ -20,7 +20,7 @@ namespace CloudwatchMetrics {
             users = new List<string>();
         }
 
-        public List<String> Fetch(string ComputerName) {
+        public List<String> Fetch(string ProcessName, string ComputerName) {
             logger.Debug("Listing users for " + ComputerName);
 
             CurrentSystem = ComputerName;
@@ -34,7 +34,7 @@ namespace CloudwatchMetrics {
                 return null;
             }
 
-            ObjectQuery query = new ObjectQuery("select * from Win32_Process where name='explorer.exe'");
+            ObjectQuery query = new ObjectQuery("select * from Win32_Process where name='" + ProcessName + "'");
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(moScope, query);
             ManagementObjectCollection queryCollection = searcher.Get();
             latch = new CountdownEvent(queryCollection.Count);
