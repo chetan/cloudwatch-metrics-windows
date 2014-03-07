@@ -26,27 +26,23 @@ namespace CloudwatchMetrics {
      * Send a user count report for each configured server
      */
     public void Report() {
-      Console.WriteLine("reporting..");
       logger.Info("Reporting metrics");
-      foreach (var server in config.Servers) {
-        List<String> users = new UserListFetcher().Fetch(server);
+      
+      List<String> users = new UserListFetcher().Fetch("localhost");
 
-        // short hostname foo.bar.com -> foo
-        string hostname = server.IndexOf(".") >= 0 ? server.Substring(0, server.IndexOf(".")) : server;
+      MetricDatum md = new MetricDatum();
+      md.MetricName = "user.count";
+      md.Value = users.Count;
+      md.Unit = StandardUnit.Count;
 
-        MetricDatum md = new MetricDatum();
-        md.MetricName = "user.count";
-        md.Value = users.Count;
-        md.Unit = StandardUnit.Count;
-
-        PutMetricDataRequest req = new PutMetricDataRequest();
-        req.Namespace = "win/" + hostname;
-        req.MetricData.Add(md);
-        PutMetricDataResponse res = client.PutMetricData(req);
-        if (res.HttpStatusCode != System.Net.HttpStatusCode.OK) {
-          logger.Error("PutMetricData failed");
-        }
+      PutMetricDataRequest req = new PutMetricDataRequest();
+      req.Namespace = "win/" + config.Hostname;
+      req.MetricData.Add(md);
+      PutMetricDataResponse res = client.PutMetricData(req);
+      if (res.HttpStatusCode != System.Net.HttpStatusCode.OK) {
+        logger.Error("PutMetricData failed");
       }
+      
     }
 
     public void Start() {

@@ -12,7 +12,14 @@ namespace CloudwatchMetrics {
     public string Region { get; set; }
     public string SecretKey { get; set; }
     public string AccessKey { get; set; }
-    public IList<string> Servers { get; set; }
+
+    private string _hostname;
+    public string Hostname {
+      get {
+        return String.IsNullOrEmpty(_hostname) ? System.Net.Dns.GetHostName() : _hostname;
+      }
+      set { _hostname = value;  }
+    }
 
     public RegionEndpoint RegionEndpoint {
       get {
@@ -39,11 +46,6 @@ namespace CloudwatchMetrics {
 
       if (String.IsNullOrEmpty(AccessKey)) {
         logger.Fatal("AccessKey cannot be empty");
-        valid = false;
-      }
-
-      if (Servers == null || Servers.Count == 0) {
-        logger.Fatal("Servers array cannot be empty");
         valid = false;
       }
 

@@ -1,5 +1,5 @@
 ﻿{
   "AccessKey" : "",
   "SecretKey" : "",
-  "Servers" : [ "localhost" ]
+  "Hostname" : "localhost"
 }
