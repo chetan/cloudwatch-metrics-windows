@@ -50,7 +50,9 @@ namespace CloudwatchMetrics {
         }
 
         private void mo_Completed(object sender, CompletedEventArgs e) {
+          if (latch.CurrentCount > 0) {
             latch.Signal();
+          }
         }
 
         private void mo_ObjectReady(object sender, ObjectReadyEventArgs e) {
