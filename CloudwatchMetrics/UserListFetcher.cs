@@ -18,7 +18,6 @@ namespace CloudwatchMetrics {
 
         public UserListFetcher() {
             users = new List<string>();
-            latch = new CountdownEvent(1);
         }
 
         public List<String> Fetch(string ComputerName) {
@@ -38,14 +37,16 @@ namespace CloudwatchMetrics {
             ObjectQuery query = new ObjectQuery("select * from Win32_Process where name='explorer.exe'");
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(moScope, query);
             ManagementObjectCollection queryCollection = searcher.Get();
+            latch = new CountdownEvent(queryCollection.Count);
+
             foreach (ManagementObject m in queryCollection) {
                 ManagementOperationObserver mo = new ManagementOperationObserver();
                 mo.ObjectReady += new ObjectReadyEventHandler(mo_ObjectReady);
                 mo.Completed += new CompletedEventHandler(mo_Completed);
                 m.InvokeMethod(mo, "GetOwner", null);
-                latch.Wait();
             }
 
+            latch.Wait();
             return users;
         }
 
