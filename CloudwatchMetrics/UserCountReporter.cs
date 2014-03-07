@@ -31,13 +31,16 @@ namespace CloudwatchMetrics {
       foreach (var server in config.Servers) {
         List<String> users = new UserListFetcher().Fetch(server);
 
+        // short hostname foo.bar.com -> foo
+        string hostname = server.IndexOf(".") >= 0 ? server.Substring(0, server.IndexOf(".")) : server;
+
         MetricDatum md = new MetricDatum();
         md.MetricName = "user.count";
         md.Value = users.Count;
         md.Unit = StandardUnit.Count;
 
         PutMetricDataRequest req = new PutMetricDataRequest();
-        req.Namespace = "win/" + server;
+        req.Namespace = "win/" + hostname;
         req.MetricData.Add(md);
         PutMetricDataResponse res = client.PutMetricData(req);
         if (res.HttpStatusCode != System.Net.HttpStatusCode.OK) {
