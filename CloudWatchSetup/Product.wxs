@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="CloudWatch Metrics" Language="1033" Version="1.0.0.0" Manufacturer="Pixelcop Research, Inc." UpgradeCode="8b35ddaa-cc38-4c5e-96e8-bcedaf3baaf0">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="ProductFeature" Title="CloudWatchSetup" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="CloudWatchMetrics" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="CloudWatchMetricsFiles" Guid="{FB7BB4EE-A622-11E3-87EF-5F15BDF4F982}">
+
+        <File Id="MyExecutable" Name="$(var.CloudWatchMetrics.TargetFileName)" Source="$(var.CloudWatchMetrics.TargetPath)" />
+        <File Source="$(var.CloudWatchMetrics.TargetDir)/AWSSDK.dll" />
+        <File Source="$(var.CloudWatchMetrics.TargetDir)/log4net.dll" />
+        <File Source="$(var.CloudWatchMetrics.TargetDir)/Newtonsoft.Json.dll" />
+        <File Source="$(var.CloudWatchMetrics.TargetPath).config" />
+        <File Source="$(var.CloudWatchMetrics.TargetDir)/config.json.sample" />
+
+        <ServiceInstall
+          Id="ServiceInstaller"
+          Type="ownProcess"
+          Vital="yes"
+          Name="CloudWatch Metrics"
+          DisplayName="CloudWatch Metrics"
+          Description="Monitoring and metrics reporting to CloudWatch"
+          Start="auto"
+          Account="LocalSystem"
+          ErrorControl="ignore"
+          Interactive="no" />
+        
+        <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="CloudWatch Metrics" Wait="no" />
+      </Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
