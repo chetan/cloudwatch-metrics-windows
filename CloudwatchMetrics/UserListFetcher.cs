@@ -59,8 +59,10 @@ namespace CloudwatchMetrics {
         private void mo_ObjectReady(object sender, ObjectReadyEventArgs e) {
             ManagementObject m = sender as ManagementObject;
             String user = e.NewObject.Properties["user"].Value.ToString();
-            Users.Add(user);
-            logger.Debug(CurrentSystem + ": " + user);
+            if (!String.IsNullOrEmpty(user)) {
+              users.Add(user);
+              logger.Debug(CurrentSystem + ": " + user);
+            }
         }
         
     }

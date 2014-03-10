@@ -25,12 +25,15 @@ namespace CloudwatchMetrics {
     }
 
     /**
-     * Send a user count report for each configured server
+     * Send a user count report
      */
     public void Report() {
       logger.Info("Reporting metrics");
       
       List<String> users = new UserListFetcher().Fetch(config.ProcessName, "localhost");
+      if (users == null) {
+        return;
+      }
 
       // Optionally filter out ignored users
       int count = users.Count;
