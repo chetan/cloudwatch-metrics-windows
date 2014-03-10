@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+
 	<Product Id="*" Name="CloudWatch Metrics" Language="1033" Version="1.1.1" Manufacturer="Pixelcop Research, Inc." UpgradeCode="8b35ddaa-cc38-4c5e-96e8-bcedaf3baaf0">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
@@ -41,6 +43,13 @@
           Account="LocalSystem"
           ErrorControl="ignore"
           Interactive="no">
+
+          <util:ServiceConfig
+            FirstFailureActionType="restart"
+            SecondFailureActionType="restart"
+            ThirdFailureActionType="restart"
+            RestartServiceDelayInSeconds="10"
+            ResetPeriodInDays="1"/>
 
           <ServiceConfigFailureActions OnInstall="yes" OnReinstall="yes" OnUninstall="no">
             <Failure Action="restartService" Delay="5000" />
